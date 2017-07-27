@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 ##################################################
 # Gnuradio Python Flow Graph
-# Title: Top Block
-# Generated: Wed Jul 26 23:45:07 2017
+# Title: Single Sideband Upconversion Complexsignals
+# Generated: Fri Jul 28 02:39:31 2017
 ##################################################
 
 from gnuradio import analog
@@ -19,10 +19,10 @@ from grc_gnuradio import wxgui as grc_wxgui
 from optparse import OptionParser
 import wx
 
-class top_block(grc_wxgui.top_block_gui):
+class Single_sideband_upconversion_complexSignals(grc_wxgui.top_block_gui):
 
     def __init__(self):
-        grc_wxgui.top_block_gui.__init__(self, title="Top Block")
+        grc_wxgui.top_block_gui.__init__(self, title="Single Sideband Upconversion Complexsignals")
         _icon_path = "/usr/share/icons/hicolor/32x32/apps/gnuradio-grc.png"
         self.SetIcon(wx.Icon(_icon_path, wx.BITMAP_TYPE_ANY))
 
@@ -34,12 +34,12 @@ class top_block(grc_wxgui.top_block_gui):
         ##################################################
         # Blocks
         ##################################################
-        self.exp3lab1 = self.exp3lab1 = wx.Notebook(self.GetWin(), style=wx.NB_TOP)
-        self.exp3lab1.AddPage(grc_wxgui.Panel(self.exp3lab1), "scope")
-        self.exp3lab1.AddPage(grc_wxgui.Panel(self.exp3lab1), "fft")
-        self.Add(self.exp3lab1)
-        self.wxgui_scopesink2_0 = scopesink2.scope_sink_f(
-        	self.exp3lab1.GetPage(0).GetWin(),
+        self.exp4lab1 = self.exp4lab1 = wx.Notebook(self.GetWin(), style=wx.NB_TOP)
+        self.exp4lab1.AddPage(grc_wxgui.Panel(self.exp4lab1), "scope")
+        self.exp4lab1.AddPage(grc_wxgui.Panel(self.exp4lab1), "fft")
+        self.Add(self.exp4lab1)
+        self.wxgui_scopesink2_0 = scopesink2.scope_sink_c(
+        	self.exp4lab1.GetPage(0).GetWin(),
         	title="Scope Plot",
         	sample_rate=samp_rate,
         	v_scale=0,
@@ -51,9 +51,9 @@ class top_block(grc_wxgui.top_block_gui):
         	trig_mode=wxgui.TRIG_MODE_AUTO,
         	y_axis_label="Counts",
         )
-        self.exp3lab1.GetPage(0).Add(self.wxgui_scopesink2_0.win)
-        self.wxgui_fftsink2_0 = fftsink2.fft_sink_f(
-        	self.exp3lab1.GetPage(1).GetWin(),
+        self.exp4lab1.GetPage(0).Add(self.wxgui_scopesink2_0.win)
+        self.wxgui_fftsink2_0 = fftsink2.fft_sink_c(
+        	self.exp4lab1.GetPage(1).GetWin(),
         	baseband_freq=0,
         	y_per_div=10,
         	y_divs=10,
@@ -67,28 +67,20 @@ class top_block(grc_wxgui.top_block_gui):
         	title="FFT Plot",
         	peak_hold=False,
         )
-        self.exp3lab1.GetPage(1).Add(self.wxgui_fftsink2_0.win)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate)
-        self.blocks_sub_xx_0 = blocks.sub_ff(1)
-        self.blocks_multiply_xx_0_0 = blocks.multiply_vff(1)
-        self.blocks_multiply_xx_0 = blocks.multiply_vff(1)
-        self.analog_sig_source_x_0_1 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 500, 1, 0)
-        self.analog_sig_source_x_0_0_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 10000, 1, 0)
-        self.analog_sig_source_x_0_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 10000, 1, 0)
-        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_SIN_WAVE, 500, 1, 0)
+        self.exp4lab1.GetPage(1).Add(self.wxgui_fftsink2_0.win)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate)
+        self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
+        self.analog_sig_source_x_1 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, 10000, 1, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, 500, 1, 0)
 
         ##################################################
         # Connections
         ##################################################
+        self.connect((self.analog_sig_source_x_1, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.analog_sig_source_x_0_0, 0), (self.blocks_multiply_xx_0, 1))
-        self.connect((self.analog_sig_source_x_0_1, 0), (self.blocks_multiply_xx_0_0, 0))
-        self.connect((self.analog_sig_source_x_0_0_0, 0), (self.blocks_multiply_xx_0_0, 1))
-        self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_sub_xx_0, 0))
-        self.connect((self.blocks_multiply_xx_0_0, 0), (self.blocks_sub_xx_0, 1))
-        self.connect((self.blocks_sub_xx_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.wxgui_fftsink2_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.wxgui_scopesink2_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.wxgui_fftsink2_0, 0))
 
 
 # QT sink close method reimplementation
@@ -98,13 +90,11 @@ class top_block(grc_wxgui.top_block_gui):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
-        self.analog_sig_source_x_0_0.set_sampling_freq(self.samp_rate)
-        self.analog_sig_source_x_0_1.set_sampling_freq(self.samp_rate)
-        self.analog_sig_source_x_0_0_0.set_sampling_freq(self.samp_rate)
-        self.wxgui_fftsink2_0.set_sample_rate(self.samp_rate)
         self.wxgui_scopesink2_0.set_sample_rate(self.samp_rate)
+        self.wxgui_fftsink2_0.set_sample_rate(self.samp_rate)
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
+        self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
+        self.analog_sig_source_x_1.set_sampling_freq(self.samp_rate)
 
 if __name__ == '__main__':
     import ctypes
@@ -117,7 +107,7 @@ if __name__ == '__main__':
             print "Warning: failed to XInitThreads()"
     parser = OptionParser(option_class=eng_option, usage="%prog: [options]")
     (options, args) = parser.parse_args()
-    tb = top_block()
+    tb = Single_sideband_upconversion_complexSignals()
     tb.Start(True)
     tb.Wait()
 
